@@ -2,6 +2,7 @@ import { initLocalization, localize, IOptions, cleanup } from "../index";
 
 const mockOptions: IOptions = {
   locale: "en",
+  localizedStringsPath: ".",
 };
 
 describe("Main unit tests", () => {
