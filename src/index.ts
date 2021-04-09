@@ -18,6 +18,19 @@ export function initLocalization(locale: IOptions) {
   localizedStrings = {};
 }
 
+/**
+ * Find and return a localized sentence based on the key provided.
+ * @param key Key representing a localized string.
+ * @param placeholders (Optional) Array of strings or numbers that can be dynamically inserted to a localized string.
+ * @returns A localized string.
+ *
+ * Example:
+ *
+ * Localized string: "This is a localized english string, the date is {0}.".
+ * JS code: localize("testString", ["January 1st"]).
+ *
+ * Returned string: "This is a localized english string, the date is January 1st."
+ */
 export function localize(
   key: string,
   placeholders?: (string | number)[]
@@ -27,6 +40,7 @@ export function localize(
     return key;
   }
   let localizedString = localizedStrings[key];
+  // if placeholders are present, use them to replace values in the string.
   if (placeholders) {
     placeholders.forEach((placeholder, index) => {
       localizedString = localizedString.replace(
