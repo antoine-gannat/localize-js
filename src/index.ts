@@ -47,8 +47,8 @@ export function initLocalization(localizationOptions: IOptions): Promise<void> {
   options = localizationOptions;
   options.locale = parseLocale(options.locale);
   const { locale, localizedStringsPath } = options;
-  return loadLocale(locale, localizedStringsPath).catch((e) =>
-    error("Failed to load locale for " + locale + " " + e)
+  return loadLocale(locale, localizedStringsPath).catch(() =>
+    error("Failed to load locale for " + locale)
   );
 }
 
