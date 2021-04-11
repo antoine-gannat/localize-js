@@ -15,6 +15,12 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm ci
-    - run: npm run build
-    - run: npm test
+    - uses: borales/actions-yarn@v2.0.0
+      with:
+        cmd: install # run `yarn install` command
+    - uses: borales/actions-yarn@v2.0.0
+      with:
+        cmd: build # run `yarn build` command
+    - uses: borales/actions-yarn@v2.0.0
+      with:
+        cmd: test # run `yarn test` command
