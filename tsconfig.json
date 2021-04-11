@@ -9,7 +9,8 @@
       "strict": true,
       "resolveJsonModule": true,
       "isolatedModules": true,
-      "esModuleInterop": true
+      "esModuleInterop": true,
+      "removeComments": true,
     },
     "include": [
       "src"

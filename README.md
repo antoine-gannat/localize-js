@@ -5,6 +5,7 @@ Simple package to add localization to your javascript project.
 ---
 
 [![Unit tests](https://github.com/antoine-gannat/localize-js/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/antoine-gannat/localize-js/actions/workflows/unit-tests.yml)
+![bundle size](https://img.badgesize.io/https:/unpkg.com/@angannat/localize-js/lib/localize.js?compression=gzip&label=Bundle%20size)
 
 ## List of features
 

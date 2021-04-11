@@ -20,19 +20,18 @@ describe("Main unit tests", () => {
     },
   };
 
-  test("init and localize", () => {
+  test("init and localize", async () => {
     const localization = new Localize(mockOptions);
-    return localization.init().then(() => {
-      // test using simple string
-      expect(localization.localize(simpleString.key)).toBe(simpleString.value);
-      // test using placeholders
-      expect(
-        localization.localize(
-          placeholderString.key,
-          placeholderString.placeholders
-        )
-      ).toBe(placeholderString.valueWithPlaceholder);
-    });
+    await localization.init();
+    // test using simple string
+    expect(localization.localize(simpleString.key)).toBe(simpleString.value);
+    // test using placeholders
+    expect(
+      localization.localize(
+        placeholderString.key,
+        placeholderString.placeholders
+      )
+    ).toBe(placeholderString.valueWithPlaceholder);
   });
 
   test("initLocalization not called", () => {
@@ -40,9 +39,29 @@ describe("Main unit tests", () => {
     expect(() => localization.localize("test")).toThrow();
   });
 
-  test("initLocalization called twice", () => {
+  test("initLocalization called twice", async () => {
     const localization = new Localize(mockOptions);
-    expect(() => localization.init()).not.toThrow();
-    expect(() => localization.init()).toThrow();
+
+    // should not fail
+    await localization.init();
+    // should fail
+    return localization
+      .init()
+      .then(() => fail("Double init did not fail."))
+      .catch(() => {});
+  });
+
+  test("Invalid locale", () => {
+    const localization = new Localize({
+      ...mockOptions,
+      locale: "invalid-locale",
+    });
+    return (
+      localization
+        .init()
+        .then(() => fail("Invalid locale did not fail."))
+        // swallow the error since we expect the promise to fail.
+        .catch(() => {})
+    );
   });
 });

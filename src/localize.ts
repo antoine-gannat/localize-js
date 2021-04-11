@@ -30,9 +30,13 @@ export interface ILocalizeOptions {
 export class Localize {
   private strings: LocalizationMap = {};
   private initialized: boolean = false;
-  constructor(private options: ILocalizeOptions) {
-    // set by default locale to lowercase to avoid any case issues.
-    this.options.locale = options.locale.toLocaleLowerCase();
+  private options: ILocalizeOptions;
+  constructor(options: ILocalizeOptions) {
+    this.options = {
+      ...options,
+      // set by default locale to lowercase to avoid any case issues.
+      locale: options.locale.toLowerCase(),
+    };
   }
 
   /**
@@ -85,7 +89,7 @@ export class Localize {
   public init(): Promise<void> {
     const { stringMap, stringsFolder, locale } = this.options;
     if (this.initialized) {
-      throw Error("Localize.init has already been called.");
+      return Promise.reject("Localize.init has already been called.");
     }
     this.initialized = true;
     // If the strings are directly provided
