@@ -1,24 +1,48 @@
-import { initLocalization, localize, IOptions, cleanup } from "../index";
-
-const mockOptions: IOptions = {
-  locale: "en",
-  localizedStringsPath: ".",
-};
+import { Localize } from "../";
+import { ILocalizeOptions } from "../localize";
 
 describe("Main unit tests", () => {
-  afterEach(() => cleanup());
+  const simpleString = { key: "test", value: "cool string" };
+  const placeholderString = {
+    key: "testWithPlaceholder",
+    value: "cool {0}",
+    placeholders: ["string"],
+    valueWithPlaceholder: "cool string",
+  };
 
-  test("initLocalization and localize", () => {
-    initLocalization(mockOptions);
-    expect(() => localize("")).not.toThrow();
+  const mockOptions: ILocalizeOptions = {
+    locale: "en-us",
+    stringMap: {
+      "en-us": {
+        [simpleString.key]: simpleString.value,
+        [placeholderString.key]: placeholderString.value,
+      },
+    },
+  };
+
+  test("init and localize", () => {
+    const localization = new Localize(mockOptions);
+    return localization.init().then(() => {
+      // test using simple string
+      expect(localization.localize(simpleString.key)).toBe(simpleString.value);
+      // test using placeholders
+      expect(
+        localization.localize(
+          placeholderString.key,
+          placeholderString.placeholders
+        )
+      ).toBe(placeholderString.valueWithPlaceholder);
+    });
   });
 
   test("initLocalization not called", () => {
-    expect(() => localize("")).toThrow();
+    const localization = new Localize(mockOptions);
+    expect(() => localization.localize("test")).toThrow();
   });
 
   test("initLocalization called twice", () => {
-    expect(() => initLocalization(mockOptions)).not.toThrow();
-    expect(() => initLocalization(mockOptions)).toThrow();
+    const localization = new Localize(mockOptions);
+    expect(() => localization.init()).not.toThrow();
+    expect(() => localization.init()).toThrow();
   });
 });
