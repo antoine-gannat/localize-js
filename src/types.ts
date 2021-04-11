@@ -224,4 +224,5 @@ export type Locale =
   | "zh-mo"
   | "zh-sg"
   | "zh-tw"
-  | "zu-za";
+  | "zu-za"
+  | string;

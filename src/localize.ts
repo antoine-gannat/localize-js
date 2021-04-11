@@ -19,7 +19,7 @@ export interface ILocalizeOptions {
    *    "someOtherStringWithPalceholder": "This is a placeholder: {0}. ",
    * }
    */
-  stringsPath?: string;
+  stringsFolder?: string;
 
   /**
    *
@@ -30,7 +30,10 @@ export interface ILocalizeOptions {
 export class Localize {
   private strings: LocalizationMap = {};
   private initialized: boolean = false;
-  constructor(private options: ILocalizeOptions) {}
+  constructor(private options: ILocalizeOptions) {
+    // set by default locale to lowercase to avoid any case issues.
+    this.options.locale = options.locale.toLocaleLowerCase();
+  }
 
   /**
    * Take a string and replace some of its content.
@@ -80,7 +83,7 @@ export class Localize {
    * @returns An empty promise when the loading is completed
    */
   public init(): Promise<void> {
-    const { stringMap, stringsPath, locale } = this.options;
+    const { stringMap, stringsFolder, locale } = this.options;
     if (this.initialized) {
       throw Error("Localize.init has already been called.");
     }
@@ -88,8 +91,8 @@ export class Localize {
     // If the strings are directly provided
     if (stringMap) {
       return this.loadStringsFromLocaleMap(locale, stringMap);
-    } else if (stringsPath) {
-      return this.lazyLoadLocale(locale, stringsPath);
+    } else if (stringsFolder) {
+      return this.lazyLoadLocale(locale, stringsFolder);
     }
     // on fail, reset initialized.
     this.initialized = false;
