@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Simple localization package.",
   "main": "lib/index.js",
-  "types": "lib/src/index.d.ts",
+  "types": "lib/index.d.ts",
   "scripts": {
     "build": "rimraf lib && tsc",
     "watch": "tsc --watch",

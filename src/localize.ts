@@ -6,7 +6,6 @@ import { Locale, StringMap, LocalizationMap, PlaceholderArray } from "./types";
 export interface ILocalizeOptions {
   /**
    * Language requested.
-   * Usually looking like "en" or "en_US".
    */
   locale: Locale;
 
