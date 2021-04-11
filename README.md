@@ -1,10 +1,10 @@
-![](logo.png)
-
 # @angannat/localize-js
 
 Simple package to add localization to your javascript project.
 
 ---
+
+[![Unit tests](https://github.com/antoine-gannat/localize-js/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/antoine-gannat/localize-js/actions/workflows/unit-tests.yml)
 
 ## List of features
 
