@@ -1,4 +1,10 @@
-import { Locale, StringMap, LocalizationMap, PlaceholderArray } from "./types";
+import {
+  Locale,
+  StringMap,
+  LocalizationMap,
+  PlaceholderArray,
+  StringsResolver,
+} from "./types";
 
 /**
  * Options used to create the Localize class
@@ -10,19 +16,19 @@ export interface ILocalizeOptions {
   locale: Locale;
 
   /**
-   * Path of the folder where the localized strings will be fetched from.
+   * Function that will be used to find strings.
    *
-   * The files inside that folder must follow the format: {locale}_strings.json.
-   * Their content must follow this format:
-   * {
-   *    "myStringKey": "My string content",
-   *    "someOtherStringWithPalceholder": "This is a placeholder: {0}. ",
-   * }
+   * The requested locale will be passed as parameter and you should return a promise with an object of localized strings.
+   *
+   * Note: If stringMap option is passed, this will not be used.
    */
-  stringsFolder?: string;
+  stringsResolver?: StringsResolver;
 
   /**
+   * List of strings based on locales.
+   * This allows for easy localization.
    *
+   * Note: It is recommended to use stringsResolver instead of this, since lazy-loading could be implemented.
    */
   stringMap?: StringMap;
 }
@@ -58,11 +64,16 @@ export class Localize {
     return stringWithPlaceholders;
   }
 
-  private lazyLoadLocale(locale: Locale, path: string): Promise<void> {
-    // lazy load the strings
-    return import(`${path}/${locale}_strings.json`).then(
-      (content) => (this.strings = content.default)
-    );
+  private useStringsResolver(
+    locale: Locale,
+    stringsResolver: StringsResolver
+  ): Promise<void> {
+    return new Promise((resolve) => {
+      stringsResolver(locale).then((strings) => {
+        this.strings = strings;
+        resolve();
+      });
+    });
   }
 
   private loadStringsFromLocaleMap(
@@ -87,7 +98,7 @@ export class Localize {
    * @returns An empty promise when the loading is completed
    */
   public init(): Promise<void> {
-    const { stringMap, stringsFolder, locale } = this.options;
+    const { stringMap, stringsResolver, locale } = this.options;
     if (this.initialized) {
       return Promise.reject("Localize.init has already been called.");
     }
@@ -95,8 +106,8 @@ export class Localize {
     // If the strings are directly provided
     if (stringMap) {
       return this.loadStringsFromLocaleMap(locale, stringMap);
-    } else if (stringsFolder) {
-      return this.lazyLoadLocale(locale, stringsFolder);
+    } else if (stringsResolver) {
+      return this.useStringsResolver(locale, stringsResolver);
     }
     // on fail, reset initialized.
     this.initialized = false;
