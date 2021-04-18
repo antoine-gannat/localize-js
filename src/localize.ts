@@ -134,6 +134,13 @@ export class Localize {
       throw Error("init has not been called.");
     }
     const localizedString = this.strings[key];
+    // if the key is not found, return an empty string and display an error in the console.
+    if (!localizedString) {
+      console.error(
+        `Localize-JS: Could not find localization for key '${key}' with locale '${this.options.locale}'.`
+      );
+      return "";
+    }
     // if placeholders are present, use them to replace values in the string.
     return placeholders
       ? this.applyPlaceholders(localizedString, placeholders)
