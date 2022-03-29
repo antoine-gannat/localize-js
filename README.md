@@ -37,7 +37,7 @@ import { Localize } from "@angannat/localize-js";
 const localization = new Localize({
   // Use the browser locale
   locale: navigator.language,
-  // or insert directly strings here.
+  // We can insert directly strings here.
   stringMap: {
     "en-us": {
       title: "This is a cool title !",
