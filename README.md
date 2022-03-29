@@ -27,19 +27,16 @@ With npm
 npm i @angannat/localize-js
 ```
 
-## Code demo
+## Usage with React
 
-### Using React
+### Basic example
 
-```js
+```jsx
 import { Localize } from "@angannat/localize-js";
 
 const localization = new Localize({
   // Use the browser locale
   locale: navigator.language,
-  // (recommended) Tell the lib where to find the localized strings.
-  // They will be lazy-loaded, only strings matching the locale will be loaded.
-  stringsFolder: "./strings/.../",
   // or insert directly strings here.
   stringMap: {
     "en-us": {
@@ -54,6 +51,49 @@ const localization = new Localize({
 });
 
 function App() {
+  const [loaded, setLoaded] = React.useState(false);
+
+  // On mount init the library
+  React.useEffect(() => {
+    localization.init().finally(() => setLoaded(true));
+  }, []);
+  if (!loaded) {
+    return null;
+  }
+  return (
+    <div>
+      {/* Get the localized title. */}
+      <h1>{localization.localize("title")}</h1>
+      {/* Use placeholders to replace part of the localized string. */}
+      <p>{localization.localize("timeNow", [Date.now()])}</p>
+    </div>
+  );
+}
+```
+
+### Advanced example with asynchronous loading
+
+```tsx
+import React from "react";
+import { Localize } from "@angannat/localize-js";
+
+/**
+ * Fetch strings from some cdn based on the locale.
+ */
+const fetchStringsFromCdn = async (locale: string) => {
+  const strings = await fetch(`https://some-cdn.test/strings/${locale}.json`);
+  return await strings.json();
+};
+
+const localization = new Localize({
+  // Use the browser locale
+  locale: navigator.language,
+  // Use the stringsResolver to asynchronously fetch strings
+  // Here we are fetching from a cdn
+  stringsResolver: fetchStringsFromCdn,
+});
+
+export default function App() {
   const [loaded, setLoaded] = React.useState(false);
 
   // On mount init the library
